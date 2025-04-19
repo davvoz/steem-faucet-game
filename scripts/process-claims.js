@@ -84,7 +84,7 @@ async function processClaims() {
         console.log(`Invio di ${amountString} a ${claim.steemUsername}`);
         
         const transfer = await client.broadcast.transfer({
-          from: steemAccount,
+          from: 'luciojolly',
           to: claim.steemUsername,
           amount: amountString,
           memo: memo
