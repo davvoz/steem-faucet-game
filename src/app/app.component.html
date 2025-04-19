@@ -1,8 +1,8 @@
 <header class="app-header">
   <div class="container">
     <div class="logo">
-      <img src="/assets/images/logo_tra.png" alt="Steem Faucet Game" class="logo-img">
-      <h1>Steem Faucet Game</h1>
+      <img src="/assets/images/logo_tra.png" alt="Steem Faucet" class="logo-img">
+      <h1>Steem Faucet</h1>
     </div>
     
     <!-- Mobile menu toggle -->
@@ -22,15 +22,18 @@
             <i class="fas fa-faucet nav-icon"></i>Faucet
           </a></li>
           <li><a routerLink="/games" routerLinkActive="active" (click)="closeMobileMenu()">
-            <i class="fas fa-gamepad nav-icon"></i>Games
+            <i class="fas fa-gamepad nav-icon"></i>Giochi
           </a></li>
           <li><a routerLink="/leaderboard" routerLinkActive="active" (click)="closeMobileMenu()">
-            <i class="fas fa-trophy nav-icon"></i>Leaderboard
+            <i class="fas fa-trophy nav-icon"></i>Classifica
           </a></li>
         </ul>
       </nav>
       
       <div class="user-actions">
+        <!-- Aggiungi il toggle del tema -->
+        <app-theme-toggle class="theme-toggle"></app-theme-toggle>
+        
         <button class="login-btn pulse" *ngIf="!isLoggedIn" (click)="login()">
           <i class="fas fa-sign-in-alt"></i>
           <span>Login</span>
@@ -65,8 +68,8 @@
   <div class="container">
     <div class="footer-content">
       <div class="footer-section">
-        <h3>About Steem Faucet Game</h3>
-        <p>Play games, earn Steem rewards, and engage with the Steem blockchain community.</p>
+        <h3>About Steem Faucet</h3>
+        <p>Receive free STEEM tokens and engage with the Steem blockchain community.</p>
       </div>
       <div class="footer-section">
         <h3>Quick Links</h3>
@@ -86,7 +89,7 @@
       </div>
     </div>
     <div class="copyright">
-      <p>&copy; {{ currentYear }} Steem Faucet Game. All rights reserved.</p>
+      <p>&copy; {{ currentYear }} Steem Faucet. All rights reserved.</p>
     </div>
   </div>
 </footer>

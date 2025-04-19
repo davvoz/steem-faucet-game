@@ -15,14 +15,6 @@ export const routes: Routes = [
     loadChildren: () => import('./features/faucet/faucet.routes').then(m => m.FAUCET_ROUTES)
   },
   {
-    path: 'games',
-    loadChildren: () => import('./features/games/games.routes').then(m => m.GAMES_ROUTES)
-  },
-  {
-    path: 'leaderboard',
-    loadChildren: () => import('./features/leaderboard/leaderboard.routes').then(m => m.LEADERBOARD_ROUTES)
-  },
-  {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },

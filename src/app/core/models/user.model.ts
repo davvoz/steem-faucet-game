@@ -6,12 +6,11 @@ export interface User {
   steemUsername?: string;
   steemBalance?: number;
   lastFaucetClaim?: Date;
-  gamePoints?: number;
   createdAt: Date;
   updatedAt: Date;
   isAdmin?: boolean;  // Adding isAdmin property
   
-  // New faucet-related fields
+  // Faucet-related fields
   consecutiveClaims?: number;     // Number of consecutive daily claims
   lastClaimStreak?: Date;         // Date to track claim streak
   totalClaimedAmount?: number;    // Total amount claimed from faucet

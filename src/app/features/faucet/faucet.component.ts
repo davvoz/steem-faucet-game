@@ -27,12 +27,11 @@ export class FaucetComponent implements OnInit, OnDestroy {
   minReward = 0.001;
   maxReward = 0.010;
   rewardPercent = 30; // Default percentage between min and max reward
-  currentTier = 1; // User's current tier: 1, 2, or 3
+  currentTier = 1; // User's current tier: 1 or 2
   
   // Tier rewards - updated to match backend limits
   baseTierReward = 0.002; // Tier 1 max
   tier2Reward = 0.005;    // Tier 2 max
-  tier3Reward = 0.010;    // Tier 3 max
   
   // Stats
   totalDistributed = 5.427;  // Would come from service
@@ -130,10 +129,8 @@ export class FaucetComponent implements OnInit, OnDestroy {
   }
 
   determineTier(user: User): void {
-    // Basic logic to determine user tier - in real app would be more sophisticated
-    if (user.gamePoints && user.gamePoints >= 100) {
-      this.currentTier = 3;
-    } else if (user.consecutiveClaims && user.consecutiveClaims >= 5) {
+    // Logic now based only on consecutive claims, no game points
+    if (user.consecutiveClaims && user.consecutiveClaims >= 5) {
       this.currentTier = 2;
     } else {
       this.currentTier = 1;
@@ -146,10 +143,6 @@ export class FaucetComponent implements OnInit, OnDestroy {
   updateTierRewards(): void {
     // Set proper min/max rewards based on the current tier
     switch (this.currentTier) {
-      case 3:
-        this.minReward = 0.001;
-        this.maxReward = this.tier3Reward;
-        break;
       case 2:
         this.minReward = 0.001;
         this.maxReward = this.tier2Reward;
@@ -173,13 +166,11 @@ export class FaucetComponent implements OnInit, OnDestroy {
           let basePercent = 0;
           
           switch(this.currentTier) {
-            case 3:
-              basePercent = 75; // Higher chance of good reward for tier 3
-              break;
             case 2:
               basePercent = 50; // Medium chance for tier 2
               break;
             case 1:
+            default:
               basePercent = 25; // Lower chance for tier 1
               break;
           }
@@ -237,8 +228,7 @@ export class FaucetComponent implements OnInit, OnDestroy {
     let claimAmount = this.calculateActualReward();
     
     // Ensure the amount doesn't exceed the tier maximum
-    const tierMax = this.currentTier === 3 ? this.tier3Reward : 
-                   (this.currentTier === 2 ? this.tier2Reward : this.baseTierReward);
+    const tierMax = this.currentTier === 2 ? this.tier2Reward : this.baseTierReward;
     
     if (claimAmount > tierMax) {
       claimAmount = tierMax;

@@ -1,6 +1,10 @@
-# SteemFaucetGame
+# SteemFaucet
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+
+## Overview
+
+SteemFaucet is a web application that allows users to claim free STEEM tokens on a daily basis. The application features a user authentication system, a faucet claim mechanism, and a tiered reward system based on consecutive daily claims.
 
 ## Development server
 

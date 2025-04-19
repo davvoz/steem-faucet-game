@@ -245,13 +245,10 @@ export class AuthService {
             consecutiveClaims = 1;
           }
           
-          // Calculate user's faucet tier based on consecutive claims and game points
-          const gamePoints = userData.gamePoints || 0;
+          // Calculate user's faucet tier based on consecutive claims
           let faucetTier = 1;
           
-          if (gamePoints >= 100) {
-            faucetTier = 3;
-          } else if (consecutiveClaims >= 5) {
+          if (consecutiveClaims >= 5) {
             faucetTier = 2;
           }
           
@@ -268,26 +265,6 @@ export class AuthService {
             lastClaimAmount: claimAmount,
             updatedAt: new Date()
           }));
-        })
-      );
-    });
-  }
-
-  // Update user game points
-  updateGamePoints(uid: string, points: number): Observable<void> {
-    const userDocRef = doc(this.firestore, `users/${uid}`);
-    return this.ngZone.run(() => {
-      return from(getDoc(userDocRef)).pipe(
-        switchMap(docSnap => {
-          if (docSnap.exists()) {
-            const userData = docSnap.data() as User;
-            const currentPoints = userData.gamePoints || 0;
-            return from(updateDoc(userDocRef, {
-              gamePoints: currentPoints + points,
-              updatedAt: new Date()
-            }));
-          }
-          return of(undefined);
         })
       );
     });

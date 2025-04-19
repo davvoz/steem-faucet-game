@@ -11,61 +11,67 @@
 }
 
 .notification {
-  background-color: white;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-strong);
+  background-color: var(--color-surface);
+  border-radius: var(--rounded-medium);
+  box-shadow: var(--shadow-medium);
   padding: 14px;
   display: flex;
   position: relative;
   overflow: hidden;
   border-left: 4px solid transparent;
+  animation: slide-in 0.3s ease;
+  transition: all var(--transition-speed) ease;
 
   &.success {
-    border-left-color: #4caf50;
+    border-left-color: var(--color-success);
     
     .notification-icon {
-      color: #4caf50;
+      color: var(--color-success);
     }
     
     .notification-progress-bar {
-      background-color: #4caf50;
+      background-color: var(--color-success);
     }
   }
   
   &.error {
-    border-left-color: #f44336;
+    border-left-color: var(--color-error);
     
     .notification-icon {
-      color: #f44336;
+      color: var(--color-error);
     }
     
     .notification-progress-bar {
-      background-color: #f44336;
+      background-color: var(--color-error);
     }
   }
   
   &.warning {
-    border-left-color: #ff9800;
+    border-left-color: var(--color-warning);
     
     .notification-icon {
-      color: #ff9800;
+      color: var(--color-warning);
     }
     
     .notification-progress-bar {
-      background-color: #ff9800;
+      background-color: var(--color-warning);
     }
   }
   
   &.info {
-    border-left-color: #2196f3;
+    border-left-color: var(--color-info);
     
     .notification-icon {
-      color: #2196f3;
+      color: var(--color-info);
     }
     
     .notification-progress-bar {
-      background-color: #2196f3;
+      background-color: var(--color-info);
     }
+  }
+  
+  &.removing {
+    animation: slide-out 0.3s ease forwards;
   }
 }
 
@@ -87,7 +93,7 @@
 
 .notification-message {
   font-size: 0.95rem;
-  color: var(--text-dark);
+  color: var(--color-text-primary);
   line-height: 1.4;
   padding-right: 10px;
 }
@@ -96,15 +102,17 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #999;
+  color: var(--color-text-tertiary);
   font-size: 0.8rem;
   padding: 4px;
   margin: -4px;
-  transition: color 0.2s;
+  transition: color var(--transition-speed) ease;
   flex-shrink: 0;
+  border-radius: var(--rounded-full);
   
   &:hover {
-    color: #555;
+    color: var(--color-text-secondary);
+    background-color: rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -114,7 +122,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-divider);
 }
 
 .notification-progress-bar {
@@ -130,6 +138,28 @@
   }
   100% {
     transform: scaleX(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
 }
 

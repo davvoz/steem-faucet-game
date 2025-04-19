@@ -6,11 +6,19 @@ import { SteemService } from './core/services/steem.service';
 import { Subscription, tap } from 'rxjs';
 import { User } from './core/models/user.model';
 import { NotificationComponent } from './shared/components/notification/notification.component';
+import { ThemeToggleComponent } from './shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationComponent],
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    RouterLink, 
+    RouterLinkActive, 
+    NotificationComponent,
+    ThemeToggleComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
