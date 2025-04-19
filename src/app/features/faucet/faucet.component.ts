@@ -42,6 +42,11 @@ export class FaucetComponent implements OnInit, OnDestroy {
   private timerSubscription: Subscription | null = null;
   private userSubscription: Subscription | null = null;
 
+  // Aggiungo variabili per le richieste pendenti
+  pendingClaims: any[] = [];
+  hasPendingClaims = false;
+  checkingPendingClaimsInterval: any;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -69,6 +74,12 @@ export class FaucetComponent implements OnInit, OnDestroy {
         this.checkCooldown(user.lastFaucetClaim);
       }
     });
+
+    // Controlla le richieste pendenti all'avvio e ogni 2 minuti
+    this.checkPendingClaims();
+    this.checkingPendingClaimsInterval = setInterval(() => {
+      this.checkPendingClaims();
+    }, 120000); // 2 minuti
   }
   
   ngOnDestroy(): void {
@@ -77,6 +88,11 @@ export class FaucetComponent implements OnInit, OnDestroy {
     }
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    
+    // Pulisci l'intervallo di controllo delle richieste pendenti
+    if (this.checkingPendingClaimsInterval) {
+      clearInterval(this.checkingPendingClaimsInterval);
     }
   }
   
@@ -230,13 +246,18 @@ export class FaucetComponent implements OnInit, OnDestroy {
 
     this.steemService.claimFaucet(steemUsername, claimAmount).pipe(
       tap((result) => {
-        // Use notification service instead of alert
-        this.notificationService.success(`Successo! Hai ricevuto ${result.amount} STEEM!`);
+        // Modifica il messaggio per riflettere che il pagamento è in elaborazione
+        this.notificationService.success(`Richiesta registrata! Riceverai ${result.amount} STEEM a breve.`);
         
         // Update the user data and form state after the claim
         this.updateUserAfterClaim(result.amount);
         this.loadRecentClaims();
         this.loadFaucetStats(); // Load updated global stats
+        
+        // Controlla subito le richieste pendenti
+        setTimeout(() => {
+          this.checkPendingClaims();
+        }, 1000);
       }),
       catchError(error => {
         console.error('Errore durante la richiesta faucet:', error);
@@ -299,6 +320,31 @@ export class FaucetComponent implements OnInit, OnDestroy {
     
     // Round to 3 decimal places
     return Math.round(reward * 1000) / 1000;
+  }
+
+  // Metodo per controllare le richieste pendenti
+  checkPendingClaims(): void {
+    this.steemService.checkPendingClaims().subscribe({
+      next: (claims) => {
+        this.pendingClaims = claims;
+        this.hasPendingClaims = claims.length > 0;
+        
+        // Notifica l'utente se ci sono richieste che sono state completate
+        this.pendingClaims.forEach(claim => {
+          if (claim.status === 'completed' && claim.transactionId && !claim.notified) {
+            this.notificationService.success(
+              `La tua richiesta di ${claim.amount} STEEM è stata processata! ID Transazione: ${claim.transactionId}`
+            );
+            
+            // Aggiorna lo stato locale per evitare notifiche duplicate
+            claim.notified = true;
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error checking pending claims:', error);
+      }
+    });
   }
 
   login(): void {

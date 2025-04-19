@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, from, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Firestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, getDoc } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 // Import dsteem with a fallback for regeneratorRuntime
 import { Client, DatabaseAPI } from 'dsteem';
@@ -165,6 +165,46 @@ export class SteemService {
           })
         );
       })
+    );
+  }
+
+  // Metodo per controllare lo stato delle richieste pendenti di un utente
+  checkPendingClaims(): Observable<any> {
+    return this.authService.currentUser$.pipe(
+      switchMap(user => {
+        if (!user) {
+          return of([]);
+        }
+        
+        const claimsCollectionRef = collection(this.firestore, 'faucet_claims');
+        const pendingClaimsQuery = query(
+          claimsCollectionRef,
+          where('userId', '==', user.uid),
+          where('status', '==', 'pending'),
+          orderBy('timestamp', 'desc'),
+          limit(5)
+        );
+        
+        return from(getDocs(pendingClaimsQuery)).pipe(
+          map(snapshot => snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))), 
+          tap(pendingClaims => {
+            if (pendingClaims.length > 0) {
+              console.log(`Hai ${pendingClaims.length} richieste in attesa di elaborazione.`);
+            }
+          })
+        );
+      })
+    );
+  }
+  
+  // Metodo per ottenere i dettagli di una specifica richiesta
+  getClaimDetails(claimId: string): Observable<any> {
+    const claimRef = doc(this.firestore, `faucet_claims/${claimId}`);
+    return from(getDoc(claimRef)).pipe(
+      map(docSnap => docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null)
     );
   }
 

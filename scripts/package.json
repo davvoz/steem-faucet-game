@@ -1,0 +1,14 @@
+{
+  "name": "steem-faucet-scripts",
+  "version": "1.0.0",
+  "description": "Scripts per processare transazioni Steem",
+  "main": "process-claims.js",
+  "scripts": {
+    "start": "node process-claims.js"
+  },
+  "dependencies": {
+    "dsteem": "^0.11.3",
+    "dotenv": "^16.0.3",
+    "firebase-admin": "^12.6.0"
+  }
+}

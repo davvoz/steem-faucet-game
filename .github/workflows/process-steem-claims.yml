@@ -1,0 +1,33 @@
+name: Process Steem Claims
+
+on:
+  schedule:
+    # Esegui ogni 15 minuti
+    - cron: '*/15 * * * *'
+  # Permette l'esecuzione manuale del workflow
+  workflow_dispatch:
+
+jobs:
+  process-claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install firebase-admin dsteem dotenv
+          
+      - name: Process pending claims
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WADA_42DD4 }}
+          STEEM_ACCOUNT: 'micro.cur8'
+          STEEM_PRIVATE_KEY: ${{ secrets.STEEM_PRIVATE_KEY }}
+        run: |
+          cd scripts
+          node process-claims.js

@@ -298,6 +298,24 @@ label {
   overflow-y: auto;
   border: 1px solid rgba(26, 35, 126, 0.1);
   border-radius: 4px;
+
+  .claim-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+    align-items: center;
+    gap: 1rem;
+
+    &:hover {
+      background-color: rgba(26, 35, 126, 0.05);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
 }
 
 .claim-item {
@@ -422,5 +440,81 @@ label {
   .faucet-stats {
     flex-direction: column;
     gap: 1rem;
+  }
+}
+
+.pending-claims {
+  background: var(--background-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #ffb300;
+  
+  h2 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &::before {
+      content: '\f252';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      color: #ffb300;
+    }
+  }
+  
+  .claim-item.pending {
+    border-left-color: #ffb300;
+    background-color: rgba(255, 179, 0, 0.05);
+    
+    &:hover {
+      background-color: rgba(255, 179, 0, 0.1);
+    }
+  }
+  
+  .claim-status {
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    
+    .fa-clock {
+      color: #ffb300;
+    }
+    
+    .fa-check-circle {
+      color: #4caf50;
+    }
+    
+    .fa-times-circle {
+      color: #f44336;
+    }
+  }
+  
+  .claim-status-text {
+    flex: 0 0 100px;
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+  
+  .processing-note {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 179, 0, 0.1);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    i {
+      color: #ffb300;
+      font-size: 1rem;
+    }
   }
 }

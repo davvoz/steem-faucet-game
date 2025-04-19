@@ -11,7 +11,7 @@
     <script defer src="/__/firebase/11.6.0/firebase-auth-compat.js"></script>
     <script defer src="/__/firebase/11.6.0/firebase-database-compat.js"></script>
     <script defer src="/__/firebase/11.6.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/11.6.0/firebase-functions-compat.js"></script>
+    <!-- Rimosso firebase-functions-compat.js poiché non lo usiamo più -->
     <script defer src="/__/firebase/11.6.0/firebase-messaging-compat.js"></script>
     <script defer src="/__/firebase/11.6.0/firebase-storage-compat.js"></script>
     <script defer src="/__/firebase/11.6.0/firebase-analytics-compat.js"></script>
@@ -56,7 +56,7 @@
         // firebase.auth().onAuthStateChanged(user => { });
         // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
         // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
+        // // Rimosso riferimento a firebase.functions()
         // firebase.messaging().requestPermission().then(() => { });
         // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
         // firebase.analytics(); // call to activate
@@ -71,7 +71,7 @@
             'auth', 
             'database', 
             'firestore',
-            'functions',
+            // Rimosso 'functions' dalla lista
             'messaging', 
             'storage', 
             'analytics', 
