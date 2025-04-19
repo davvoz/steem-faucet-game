@@ -1,0 +1,15 @@
+<div class="memory-scoreboard">
+  <div class="score-item">
+    <span class="label">Mosse:</span>
+    <span class="value">{{ moves }}</span>
+  </div>
+  <div class="score-item">
+    <span class="label">Coppie trovate:</span>
+    <span class="value">{{ matches }} / {{ totalPairs }}</span>
+  </div>
+  <div class="score-item">
+    <span class="label">Tempo:</span>
+    <span class="value">{{ formatTime(elapsedTime) }}</span>
+  </div>
+  <button *ngIf="gameCompleted" class="restart-btn" (click)="onRestart()">Rigioca</button>
+</div>

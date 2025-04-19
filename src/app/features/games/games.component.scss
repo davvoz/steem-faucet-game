@@ -1,0 +1,311 @@
+.games-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+h1 {
+  color: #1a237e;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.user-points {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.points-card {
+  background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+  border-radius: 8px;
+  padding: 1.5rem 3rem;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.points-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.points-label {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.game-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f5f5f5;
+}
+
+.game-info {
+  padding: 1.5rem;
+}
+
+.game-info h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #1a237e;
+}
+
+.game-description {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.game-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.detail-value {
+  color: #666;
+}
+
+.play-button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.play-button:hover {
+  background: #e64a19;
+}
+
+.play-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.user-history {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.user-history h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1a237e;
+}
+
+.history-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-game {
+  font-weight: 500;
+  color: #333;
+}
+
+.history-reward {
+  font-weight: 500;
+  color: #4caf50;
+}
+
+.history-time {
+  color: #757575;
+  font-size: 0.9rem;
+}
+
+.no-history, .no-games {
+  text-align: center;
+  color: #757575;
+  padding: 2rem 0;
+}
+
+.login-prompt {
+  background: #f5f5f5;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #1a237e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s;
+}
+
+.login-button:hover {
+  background: #0d1440;
+}
+
+.game-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1a237e;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.game-placeholder {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background 0.3s;
+}
+
+.action-button:hover {
+  background: #e64a19;
+}
+
+.action-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.game-result {
+  padding: 2rem;
+  text-align: center;
+  background: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+.game-result h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.result-message {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.points-earned {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+@media (max-width: 768px) {
+  .games-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-item {
+    flex-direction: column;
+  }
+
+  .history-game, .history-reward {
+    margin-bottom: 0.5rem;
+  }
+}

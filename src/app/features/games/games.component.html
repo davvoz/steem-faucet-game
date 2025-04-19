@@ -1,0 +1,79 @@
+<div class="games-container">
+  <h1>Giochi disponibili</h1>
+  <p class="subtitle">Gioca e guadagna punti che possono essere convertiti in token STEEM!</p>
+
+  <div class="user-points" *ngIf="isAuthenticated$ | async">
+    <div class="points-card">
+      <div class="points-value">{{ userPoints }}</div>
+      <div class="points-label">I tuoi punti</div>
+    </div>
+  </div>
+
+  <div class="games-grid">
+    <div *ngFor="let game of games$ | async" class="game-card">
+      <div class="game-image" [ngStyle]="{'background-image': 'url(' + (game.imageUrl || '/assets/images/default-game.jpg') + ')'}"></div>
+      <div class="game-info">
+        <h2>{{ game.name }}</h2>
+        <p class="game-description">{{ game.description }}</p>
+        <div class="game-details">
+          <div class="detail">
+            <span class="detail-label">Tipo:</span>
+            <span class="detail-value">{{ game.type }}</span>
+          </div>
+          <div class="detail">
+            <span class="detail-label">Ricompensa:</span>
+            <span class="detail-value">{{ game.minReward }} - {{ game.maxReward }} punti</span>
+          </div>
+          <div class="detail">
+            <span class="detail-label">Cooldown:</span>
+            <span class="detail-value">{{ game.cooldownMinutes }} minuti</span>
+          </div>
+        </div>
+        <button class="play-button" (click)="playGame(game)" [disabled]="!(isAuthenticated$ | async)">
+          Gioca ora
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="(games$ | async)?.length === 0" class="no-games">
+      <p>Nessun gioco disponibile al momento. Torna più tardi!</p>
+    </div>
+  </div>
+
+  <div class="user-history" *ngIf="isAuthenticated$ | async">
+    <h2>La tua cronologia di gioco</h2>
+    <div class="history-list" *ngIf="gameHistory.length > 0; else noHistory">
+      <div class="history-item" *ngFor="let history of gameHistory">
+        <div class="history-game">{{ history.gameName }}</div>
+        <div class="history-reward">+{{ history.reward }} punti</div>
+        <div class="history-time">{{ history.timestamp?.toDate() | date:'medium' }}</div>
+      </div>
+    </div>
+    <ng-template #noHistory>
+      <p class="no-history">Non hai ancora giocato a nessun gioco.</p>
+    </ng-template>
+  </div>
+
+  <div class="login-prompt" *ngIf="!(isAuthenticated$ | async)">
+    <p>Accedi per giocare e guadagnare punti</p>
+    <button class="login-button" (click)="login()">Accedi</button>
+  </div>
+</div>
+
+<div class="game-modal" *ngIf="activeGame">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ activeGame.name }}</h2>
+      <button class="close-button" (click)="closeGame()">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- Contenitore per il componente di gioco dinamico -->
+      <ng-template #gameContainer></ng-template>
+    </div>
+    <div *ngIf="gameResult" class="game-result">
+      <h3>Risultato</h3>
+      <p class="result-message">Hai guadagnato <span class="points-earned">{{ gameResult.reward }} punti</span>!</p>
+      <button class="action-button" (click)="closeGame()">Continua</button>
+    </div>
+  </div>
+</div>

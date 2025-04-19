@@ -1,0 +1,155 @@
+<div class="faucet-container">
+  <div class="faucet-card">
+    <h1>Steem Faucet</h1>
+    <p class="description">Richiedi il tuo STEEM gratuito ogni 24 ore.</p>
+    
+    <div class="user-status" *ngIf="user$ | async as user; else loginPrompt">
+      <p class="greeting">Ciao, {{ user.displayName || 'Utente' }}!</p>
+      
+      <ng-container *ngIf="canClaim; else cooldown">
+        <form [formGroup]="faucetForm" (ngSubmit)="claimFaucet()" class="faucet-form">
+          <div class="form-group">
+            <label for="steemUsername">Username Steem</label>
+            <input 
+              type="text" 
+              id="steemUsername" 
+              formControlName="steemUsername" 
+              placeholder="Inserisci il tuo username Steem"
+              required
+              class="form-input"
+            >
+            <div class="error-message" *ngIf="faucetForm.get('steemUsername')?.invalid && faucetForm.get('steemUsername')?.touched">
+              Username Steem è obbligatorio
+            </div>
+          </div>
+          
+          <div class="reward-info">
+            <h3>Ricompensa Possibile</h3>
+            <div class="reward-range">
+              <span class="min-reward">{{ minReward | number:'1.3-3' }}</span>
+              <div class="reward-meter">
+                <div class="reward-indicator" [style.width.%]="rewardPercent"></div>
+              </div>
+              <span class="max-reward">{{ maxReward | number:'1.3-3' }}</span>
+            </div>
+            <p class="reward-explanation">
+              <i class="fas fa-info-circle"></i> La ricompensa varia in base alla tua attività e al numero di utenti attivi.
+            </p>
+          </div>
+          
+          <button 
+            type="submit" 
+            class="claim-button" 
+            [disabled]="faucetForm.invalid || isSubmitting"
+          >
+            <span *ngIf="!isSubmitting">
+              <i class="fas fa-hand-holding-water"></i> Richiedi STEEM
+            </span>
+            <span *ngIf="isSubmitting" class="spinner">
+              <i class="fas fa-circle-notch fa-spin"></i> Elaborazione...
+            </span>
+          </button>
+        </form>
+      </ng-container>
+      
+      <ng-template #cooldown>
+        <div class="cooldown-message">
+          <i class="fas fa-hourglass-half"></i>
+          <p>Hai già richiesto il tuo STEEM oggi.</p>
+          <p>Potrai richiedere nuovamente tra: <span class="countdown">{{ cooldownTimeRemaining }}</span></p>
+          <div class="cooldown-progress">
+            <div class="cooldown-bar" [style.width.%]="cooldownPercent"></div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    
+    <ng-template #loginPrompt>
+      <div class="login-prompt">
+        <i class="fas fa-lock"></i>
+        <p>Accedi per richiedere il tuo STEEM gratuito</p>
+        <button class="login-button" (click)="login()">
+          <i class="fas fa-sign-in-alt"></i> Accedi
+        </button>
+      </div>
+    </ng-template>
+
+    <div class="faucet-info">
+      <h3>Come funziona?</h3>
+      <ol>
+        <li>Accedi con il tuo account</li>
+        <li>Inserisci il tuo username Steem</li>
+        <li>Clicca su "Richiedi STEEM"</li>
+        <li>Ricevi i tuoi STEEM gratuiti</li>
+      </ol>
+      <p class="note">Puoi richiedere STEEM una volta ogni 24 ore.</p>
+      
+      <div class="faucet-stats">
+        <div class="stat-item">
+          <span class="stat-label">Totale distribuito</span>
+          <span class="stat-value">{{ totalDistributed | number:'1.3-3' }} STEEM</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Utenti serviti</span>
+          <span class="stat-value">{{ totalUsers }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recent-claims">
+    <h2>Richieste recenti</h2>
+    <div class="claims-list" *ngIf="recentClaims.length > 0; else noClaims">
+      <div class="claim-item" *ngFor="let claim of recentClaims">
+        <div class="claim-user">
+          <i class="fas fa-user"></i> {{ claim.steemUsername }}
+        </div>
+        <div class="claim-amount">
+          {{ claim.amount | number:'1.3-3' }} STEEM
+        </div>
+        <div class="claim-time">
+          <i class="fas fa-clock"></i> {{ claim.timestamp?.toDate() | date:'medium' }}
+        </div>
+      </div>
+    </div>
+    <ng-template #noClaims>
+      <p class="no-claims">Nessuna richiesta recente</p>
+    </ng-template>
+    
+    <div class="faucet-tiers">
+      <h3>Aumenta le tue ricompense!</h3>
+      <div class="tier-list">
+        <div class="tier-item" [class.tier-active]="currentTier >= 1">
+          <div class="tier-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="tier-details">
+            <h4>Nuovo utente</h4>
+            <p>Ricompensa base: {{ baseTierReward | number:'1.3-3' }} STEEM</p>
+            <div class="tier-requirements">Nessun requisito</div>
+          </div>
+        </div>
+        <div class="tier-item" [class.tier-active]="currentTier >= 2">
+          <div class="tier-icon">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <div class="tier-details">
+            <h4>Utente Fedele</h4>
+            <p>Ricompensa: {{ tier2Reward | number:'1.3-3' }} STEEM</p>
+            <div class="tier-requirements">Richiedi per 5 giorni consecutivi</div>
+          </div>
+        </div>
+        <div class="tier-item" [class.tier-active]="currentTier >= 3">
+          <div class="tier-icon">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <div class="tier-details">
+            <h4>Utente Premium</h4>
+            <p>Ricompensa: {{ tier3Reward | number:'1.3-3' }} STEEM</p>
+            <div class="tier-requirements">Accumula 100+ punti nei giochi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

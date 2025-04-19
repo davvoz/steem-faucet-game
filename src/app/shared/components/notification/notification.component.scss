@@ -1,0 +1,143 @@
+.notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 320px;
+  width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification {
+  background-color: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-strong);
+  padding: 14px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid transparent;
+
+  &.success {
+    border-left-color: #4caf50;
+    
+    .notification-icon {
+      color: #4caf50;
+    }
+    
+    .notification-progress-bar {
+      background-color: #4caf50;
+    }
+  }
+  
+  &.error {
+    border-left-color: #f44336;
+    
+    .notification-icon {
+      color: #f44336;
+    }
+    
+    .notification-progress-bar {
+      background-color: #f44336;
+    }
+  }
+  
+  &.warning {
+    border-left-color: #ff9800;
+    
+    .notification-icon {
+      color: #ff9800;
+    }
+    
+    .notification-progress-bar {
+      background-color: #ff9800;
+    }
+  }
+  
+  &.info {
+    border-left-color: #2196f3;
+    
+    .notification-icon {
+      color: #2196f3;
+    }
+    
+    .notification-progress-bar {
+      background-color: #2196f3;
+    }
+  }
+}
+
+.notification-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.notification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.notification-message {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  line-height: 1.4;
+  padding-right: 10px;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 0.8rem;
+  padding: 4px;
+  margin: -4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  
+  &:hover {
+    color: #555;
+  }
+}
+
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.notification-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  animation: progress-animation linear forwards;
+}
+
+@keyframes progress-animation {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .notifications-container {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}

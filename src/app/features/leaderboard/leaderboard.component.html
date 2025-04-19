@@ -1,0 +1,61 @@
+<div class="leaderboard-container">
+  <h1>Classifica</h1>
+  <p class="subtitle">I migliori giocatori della piattaforma</p>
+
+  <div class="user-rank" *ngIf="isAuthenticated$ | async">
+    <div class="rank-card" *ngIf="userRank">
+      <div class="rank-header">Il tuo posizionamento</div>
+      <div class="rank-position">#{{ userRank.rank }}</div>
+      <div class="rank-points">{{ userRank.points }} punti</div>
+    </div>
+  </div>
+
+  <div class="leaderboard">
+    <div class="leaderboard-header">
+      <div class="rank-column">Posizione</div>
+      <div class="player-column">Giocatore</div>
+      <div class="points-column">Punti</div>
+    </div>
+
+    <div class="leaderboard-body">
+      <div class="leaderboard-row" *ngFor="let entry of leaderboard; let i = index" [ngClass]="{'current-user': entry.id === currentUserId}">
+        <div class="rank-column">
+          <div class="rank" [ngClass]="{'top-rank': i < 3}">
+            {{ i + 1 }}
+          </div>
+        </div>
+        <div class="player-column">
+          <div class="player-avatar" *ngIf="entry.photoURL">
+            <img [src]="entry.photoURL" alt="Avatar">
+          </div>
+          <div class="player-avatar" *ngIf="!entry.photoURL">
+            <div class="default-avatar">{{ getInitials(entry.displayName) }}</div>
+          </div>
+          <div class="player-info">
+            <div class="player-name">{{ entry.displayName }}</div>
+            <div class="player-username" *ngIf="entry.steemUsername">{{ '@' + entry.steemUsername }}</div>
+          </div>
+        </div>
+        <div class="points-column">
+          <div class="points">{{ entry.points }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="leaderboard.length === 0" class="no-data">
+        <p>Ancora nessun giocatore in classifica.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="leaderboard-info">
+    <h2>Come funziona la classifica?</h2>
+    <p>La classifica viene aggiornata in tempo reale man mano che gli utenti guadagnano punti giocando ai mini-giochi disponibili sulla piattaforma.</p>
+    <p>I punti possono essere guadagnati in diversi modi:</p>
+    <ul>
+      <li>Completando giochi sulla piattaforma</li>
+      <li>Partecipando agli eventi speciali</li>
+      <li>Invitando amici a unirsi</li>
+    </ul>
+    <p>Alla fine di ogni mese, i primi 10 giocatori in classifica riceveranno premi in token STEEM!</p>
+  </div>
+</div>

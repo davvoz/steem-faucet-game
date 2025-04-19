@@ -1,0 +1,50 @@
+<div class="admin-container">
+  <h1>Pannello Amministrativo</h1>
+  
+  <section class="reset-section">
+    <h2>Reset Tabelle Database</h2>
+    <p class="warning">
+      <strong>Attenzione:</strong> Il reset delle tabelle eliminerà permanentemente tutti i dati nelle collezioni selezionate.
+      Questa operazione non può essere annullata.
+    </p>
+    
+    <div class="collections-container">
+      <div class="collections-header">
+        <h3>Seleziona le tabelle da resettare:</h3>
+        <div class="select-actions">
+          <button (click)="toggleAll(true)" [disabled]="isResetting">Seleziona tutti</button>
+          <button (click)="toggleAll(false)" [disabled]="isResetting">Deseleziona tutti</button>
+        </div>
+      </div>
+      
+      <div class="collections-list">
+        @for (collection of collections; track collection.name) {
+          <div class="collection-item">
+            <label>
+              <input type="checkbox" [(ngModel)]="collection.selected" [disabled]="isResetting">
+              {{ collection.name }}
+            </label>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button 
+        class="reset-button" 
+        (click)="resetSelected()" 
+        [disabled]="isResetting || !hasSelectedCollections()">
+        {{ isResetting ? 'Reset in corso...' : 'Reset Tabelle Selezionate' }}
+      </button>
+    </div>
+    
+    <div class="results" *ngIf="resetResults.length > 0">
+      <h3>Risultati:</h3>
+      <ul>
+        @for (result of resetResults; track $index) {
+          <li>{{ result }}</li>
+        }
+      </ul>
+    </div>
+  </section>
+</div>
