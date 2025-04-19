@@ -26,7 +26,7 @@ jobs:
       - name: Process pending claims
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WADA_42DD4 }}
-          STEEM_ACCOUNT: 'micro.cur8'
+          STEEM_ACCOUNT: 'luciojolly'
           STEEM_PRIVATE_KEY: ${{ secrets.STEEM_PRIVATE_KEY }}
         run: |
           cd scripts
