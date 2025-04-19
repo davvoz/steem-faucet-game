@@ -37,7 +37,8 @@ export class MemoryGamePlugin implements GamePlugin {
     // Il punteggio è calcolato in base a:
     // - Numero di mosse (meno mosse = più punti)
     // - Tempo impiegato (meno tempo = più punti)
-    const { moves, timeMs } = options || { moves: 30, timeMs: 60000 };
+    const moves = options?.moves ?? 30; // Default to 30 if undefined
+    const timeMs = options?.timeMs ?? 60000; // Default to 60 seconds if undefined
     
     const maxScore = 100;
     const maxMoves = 30;
@@ -54,9 +55,9 @@ export class MemoryGamePlugin implements GamePlugin {
       success: true,
       score: finalScore,
       metadata: {
-        moves,
-        timeMs,
-        pairs: this.matches
+        moves: moves, // Ensure we use our safely assigned value
+        timeMs: timeMs, // Ensure we use our safely assigned value
+        pairs: this.matches || 0 // Safeguard against undefined
       }
     };
   }

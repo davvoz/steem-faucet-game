@@ -109,10 +109,14 @@ export class MemoryGameComponent implements OnInit, OnDestroy {
     this.stopTimer();
     
     try {
+      // Ensure we have valid values before passing them
+      const moves = this.moves || 0;
+      const timeMs = this.elapsedTime || 0;
+      
       // Invia il risultato al servizio di gioco
       const gameResult = await this.memoryGamePlugin.play({
-        moves: this.moves,
-        timeMs: this.elapsedTime
+        moves: moves,
+        timeMs: timeMs
       });
       
       // Usa il metodo playGameWithPlugin invece di submitGameResult
