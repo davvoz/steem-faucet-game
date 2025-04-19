@@ -39,7 +39,7 @@ const steemNodes = ['https://api.steemit.com', 'https://rpc.steemviz.com', 'http
 const client = new Client(steemNodes[0]);
 
 // Credenziali Steem (dal wallet micro.cur8)
-const steemAccount = process.env.STEEM_ACCOUNT || 'micro.cur8';
+const steemAccount = process.env.STEEM_ACCOUNT || 'luciojolly';
 const steemPrivateKey = PrivateKey.fromString(process.env.STEEM_PRIVATE_KEY);
 
 // Funzione principale
