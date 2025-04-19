@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "public",
+    "public": "dist/steem-faucet-game/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
