@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
@@ -22,7 +22,7 @@ import { ThemeToggleComponent } from './shared/components/theme-toggle/theme-tog
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   title = 'steem-faucet-game';
   isLoggedIn = false;
   username = '';
@@ -48,6 +48,16 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+  }
+
+  ngAfterViewInit(): void {
+    // Aggiungi indici di animazione agli elementi del menu per l'effetto a cascata
+    setTimeout(() => {
+      const menuItems = document.querySelectorAll('.main-nav ul li');
+      menuItems.forEach((item, index) => {
+        (item as HTMLElement).style.setProperty('--item-index', index.toString());
+      });
+    });
   }
 
   updateUserState(user: User | null): void {
@@ -84,12 +94,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.mobileMenuOpen = !this.mobileMenuOpen;
     // Prevent scrolling when menu is open
     document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+    // Add or remove menu-open class to body for overlay
+    if (this.mobileMenuOpen) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
   }
   
   closeMobileMenu(): void {
     if (this.mobileMenuOpen) {
       this.mobileMenuOpen = false;
       document.body.style.overflow = '';
+      document.body.classList.remove('menu-open');
     }
   }
 }

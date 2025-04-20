@@ -6,12 +6,13 @@
     </div>
     
     <!-- Mobile menu toggle -->
-    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+    <button class="mobile-menu-toggle" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()" aria-label="Toggle menu">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
     
+    <!-- Navigation container - desktop form always visible, mobile form controlled by mobileMenuOpen -->
     <div class="nav-container" [class.active]="mobileMenuOpen">
       <nav class="main-nav">
         <ul>
@@ -51,6 +52,9 @@
     </div>
   </div>
 </header>
+
+<!-- Mobile menu overlay -->
+<div class="mobile-menu-overlay" [class.active]="mobileMenuOpen" (click)="closeMobileMenu()"></div>
 
 <main class="app-content">
   <div class="container">
