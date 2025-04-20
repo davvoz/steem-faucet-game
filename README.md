@@ -1,7 +1,7 @@
 # Steem Faucet Game
 
 [![Process Steem Claims](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml)
-[![Deploy to GitHub Pages](https://github.com/davvoz/steem-faucet-game/actions/workflows/deploy-github-pages.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/github-pages-deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/davvoz/steem-faucet-game/actions/workflows/github-pages-deploy.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/github-pages-deploy.yml)
 
 A modern web application that allows users to claim free STEEM tokens on a daily basis, built with Angular and Firebase.
 
