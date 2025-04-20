@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Steem Faucet Game</title>
+  <script type="text/javascript">
+    // GitHub Pages 404 hack - reindirizza alla home page
+    var segmentCount = 1;
+    var location = window.location;
+    var pathname = location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1);
+    var repo = pathname.substring(1).substring(0, pathname.substring(1).indexOf("/") + 1);
+    var redirect = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "") + pathname + "?path=" + 
+              location.pathname.replace(pathname, "").replace(/&/g, "~and~") +
+              (location.search ? "&query=" + location.search.slice(1).replace(/&/g, "~and~") : "") +
+              (location.hash ? "&hash=" + location.hash.slice(1) : "");
+    sessionStorage.redirect = redirect;
+    window.location.href = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "") + pathname;
+  </script>
+</head>
+<body>
+  <h1>Pagina non trovata</h1>
+  <p>Reindirizzamento alla home...</p>
+</body>
+</html>

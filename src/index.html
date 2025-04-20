@@ -8,6 +8,18 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+  
+  <!-- Script per gestire i redirect in GitHub Pages -->
+  <script type="text/javascript">
+    // Reindirizzamento da 404.html
+    (function() {
+      var redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect !== location.href) {
+        history.replaceState(null, null, redirect.split('?')[0]);
+      }
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

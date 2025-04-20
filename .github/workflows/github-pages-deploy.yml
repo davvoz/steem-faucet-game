@@ -36,24 +36,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Build
-        run: npm run build
+      - name: Extract repository name
+        run: echo "REPO_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        
+      - name: Build with correct base-href
+        run: npm run build -- --base-href="/${{ env.REPO_NAME }}/"
         
       - name: Debug output directory
         run: |
           ls -la dist
           ls -la dist/steem-faucet-game || echo "Non esiste dist/steem-faucet-game"
-          ls -la dist/browser || echo "Non esiste dist/browser"
           find dist -type d | sort
-        
+          
+      - name: Create .nojekyll file
+        run: |
+          touch dist/steem-faucet-game/browser/.nojekyll
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Il percorso verrà determinato dalla struttura della build
-          path: './dist'  # Questo verrà aggiornato dopo aver verificato l'output effettivo
+          # Imposta il percorso corretto per l'output di Angular v17+
+          path: './dist/steem-faucet-game/browser'
           
       - name: Deploy to GitHub Pages
         id: deployment
