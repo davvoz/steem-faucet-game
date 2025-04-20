@@ -191,13 +191,16 @@ export class FaucetComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
-  checkCooldown(lastClaimDate: Date): void {
-    const now = new Date();
-    const lastClaim = lastClaimDate instanceof Date 
-      ? lastClaimDate 
-      : new Date(lastClaimDate);
+  checkCooldown(lastClaimTimestamp: any): void {
+    // Gestione corretta dei timestamp Firestore
+    const lastClaimDate = lastClaimTimestamp instanceof Date 
+      ? lastClaimTimestamp 
+      : lastClaimTimestamp?.toDate 
+        ? lastClaimTimestamp.toDate() 
+        : new Date(lastClaimTimestamp);
     
-    const hoursSinceLastClaim = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
+    const now = new Date();
+    const hoursSinceLastClaim = (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
     const cooldownHours = 24;
     
     if (hoursSinceLastClaim < cooldownHours) {

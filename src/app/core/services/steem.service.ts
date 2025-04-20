@@ -2,10 +2,17 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, from, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Firestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, getDoc, runTransaction } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 // Import dsteem with a fallback for regeneratorRuntime
 import { Client, DatabaseAPI } from 'dsteem';
+
+// Define User interface
+interface User {
+  lastFaucetClaim?: Date | any;
+  faucetTier?: number;
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -91,79 +98,113 @@ export class SteemService {
           return throwError(() => new Error('User not authenticated'));
         }
         
-        // Check if steemUsername exists on the blockchain
-        return this.getAccount(steemUsername).pipe(
-          switchMap(account => {
-            if (!account) {
-              return throwError(() => new Error('Steem username not found. Please check and try again.'));
-            }
-            
-            // Check for cooldown period
-            if (user.lastFaucetClaim) {
-              const cooldownHours = 24; // 24 hour cooldown
-              const lastClaimDate = user.lastFaucetClaim instanceof Date 
-                ? user.lastFaucetClaim 
-                : new Date(user.lastFaucetClaim);
-              const now = new Date();
-              const hoursSinceLastClaim = (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
+        // Utilizzo di runTransaction per eseguire il claim in modo atomico
+        return from(runTransaction(this.firestore, async (transaction) => {
+          // 1. Verifica l'esistenza dell'account Steem
+          const account = await this.client.database.getAccounts([steemUsername])
+            .then(accounts => accounts && accounts.length > 0 ? accounts[0] : null)
+            .catch(error => {
+              throw new Error(`Failed to get account: ${error}`);
+            });
               
-              if (hoursSinceLastClaim < cooldownHours) {
-                const hoursRemaining = Math.ceil(cooldownHours - hoursSinceLastClaim);
-                return throwError(() => new Error(`You can claim again in ${hoursRemaining} hours`));
-              }
+          if (!account) {
+            throw new Error('Steem username not found. Please check and try again.');
+          }
+            
+          // 2. Verifica del cooldown tramite dati più recenti in Firestore
+          const userDocRef = doc(this.firestore, `users/${user.uid}`);
+          const userDocSnap = await transaction.get(userDocRef);
+            
+          if (!userDocSnap.exists()) {
+            throw new Error('User document not found');
+          }
+            
+          const userData = userDocSnap.data() as User;
+            
+          if (userData.lastFaucetClaim) {
+            const lastClaimTimestamp = userData.lastFaucetClaim;
+            // Convertiamo il timestamp Firestore in Date
+            const lastClaimDate = lastClaimTimestamp instanceof Date ? 
+              lastClaimTimestamp : 
+              lastClaimTimestamp.toDate ? lastClaimTimestamp.toDate() : new Date(lastClaimTimestamp);
+              
+            const now = new Date();
+            const hoursSinceLastClaim = (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
+              
+            if (hoursSinceLastClaim < 24) {
+              const hoursRemaining = Math.ceil(24 - hoursSinceLastClaim);
+              throw new Error(`You can claim again in ${hoursRemaining} hours`);
             }
-
-            // Implement anti-fraud checks
-            // 1. Check IP rate limiting (would be implemented in a real backend)
-            // 2. Check account age on Steem blockchain
-            const accountCreationDate = new Date(account.created);
-            const accountAgeInDays = (new Date().getTime() - accountCreationDate.getTime()) / (1000 * 60 * 60 * 24);
+          }
             
-            if (accountAgeInDays < 7) {
-              return throwError(() => new Error('Your Steem account must be at least 7 days old to use this faucet'));
-            }
+          // 3. Check account age on Steem blockchain
+          const accountCreationDate = new Date(account.created);
+          const accountAgeInDays = (new Date().getTime() - accountCreationDate.getTime()) / (1000 * 60 * 60 * 24);
             
-            // 3. Verify the amount is within allowed range based on user tier
-            const userTier = user.faucetTier || 1;
-            const maxAllowedAmount = userTier === 3 ? 0.010 : (userTier === 2 ? 0.005 : 0.002);
+          if (accountAgeInDays < 7) {
+            throw new Error('Your Steem account must be at least 7 days old to use this faucet');
+          }
             
-            if (amount > maxAllowedAmount) {
-              return throwError(() => new Error(`The maximum amount for your tier is ${maxAllowedAmount} STEEM`));
-            }
+          // 4. Verify the amount is within allowed range based on user tier
+          const userTier = userData.faucetTier || 1;
+          const maxAllowedAmount = userTier === 3 ? 0.010 : (userTier === 2 ? 0.005 : 0.002);
             
-            // Record the claim in Firestore with additional metadata
-            const claimsCollectionRef = collection(this.firestore, 'faucet_claims');
-            return from(addDoc(claimsCollectionRef, {
-              userId: user.uid,
-              steemUsername,
-              amount,
-              timestamp: serverTimestamp(),
-              status: 'pending', // This will be updated to 'completed' after processing
-              userTier: userTier,
-              ipAddress: 'masked-for-privacy', // In a real app, would use the user's IP
-              userAgent: navigator.userAgent, // For tracking potential abuse patterns
-              processedAt: null // Will be updated when the blockchain transaction completes
-            })).pipe(
-              switchMap(() => this.authService.updateLastFaucetClaim(user.uid, amount)),
-              map(() => ({
-                success: true,
-                message: `Successfully claimed ${amount} STEEM!`,
-                amount,
-                timestamp: new Date(),
-                steemUsername
-              })),
-              tap((result) => {
-                // Here you would typically trigger a backend function to process the actual Steem blockchain transaction
-                // For this example, we're just recording it in Firestore
-                console.log(`Faucet claim recorded for ${steemUsername}: ${amount} STEEM`);
-              })
-            );
-          }),
-          catchError(error => {
-            console.error('Error processing claim:', error);
-            return throwError(() => new Error(`Failed to process claim: ${error.message}`));
-          })
+          if (amount > maxAllowedAmount) {
+            throw new Error(`The maximum amount for your tier is ${maxAllowedAmount} STEEM`);
+          }
+            
+          // 5. Verifica se ci sono altri claim pendenti per questo utente
+          const claimsCollectionRef = collection(this.firestore, 'faucet_claims');
+          const pendingClaimsQuery = query(
+            claimsCollectionRef,
+            where('userId', '==', user.uid),
+            where('status', '==', 'pending')
+          );
+            
+          const pendingClaimsSnapshot = await getDocs(pendingClaimsQuery);
+          if (!pendingClaimsSnapshot.empty) {
+            throw new Error('You have pending claims. Please wait until they are processed.');
+          }
+            
+          // 6. Crea il nuovo claim
+          const newClaimRef = doc(claimsCollectionRef);
+          transaction.set(newClaimRef, {
+            id: newClaimRef.id,
+            userId: user.uid,
+            steemUsername,
+            amount,
+            timestamp: serverTimestamp(), // Sempre usare serverTimestamp per maggiore sicurezza
+            status: 'pending',
+            userTier: userTier,
+            userAgent: navigator.userAgent,
+            createdAt: serverTimestamp(),
+            processedAt: null
+          });
+            
+          // 7. Aggiorna il timestamp dell'ultimo claim dell'utente
+          // Nota: questo non aggiorna più direttamente lastFaucetClaim
+          // La sicurezza è spostata nella transazione in updateLastFaucetClaim
+            
+          return {
+            success: true,
+            message: `Successfully claimed ${amount} STEEM!`,
+            amount,
+            timestamp: new Date(),
+            steemUsername
+          };
+        })).pipe(
+          switchMap(result => 
+            // Utilizza il metodo updateLastFaucetClaim dall'authService che ora contiene
+            // anche esso una transazione per massima sicurezza
+            this.authService.updateLastFaucetClaim(user.uid, amount).pipe(
+              map(() => result)
+            )
+          )
         );
+      }),
+      catchError(error => {
+        console.error('Error processing claim:', error);
+        return throwError(() => new Error(`Failed to process claim: ${error.message}`));
       })
     );
   }

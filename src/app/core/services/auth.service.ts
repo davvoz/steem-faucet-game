@@ -10,7 +10,7 @@ import {
   GoogleAuthProvider, 
   signInWithPopup 
 } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, runTransaction } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, from, of } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
@@ -202,71 +202,79 @@ export class AuthService {
   // Update last faucet claim timestamp with enhanced tracking
   updateLastFaucetClaim(uid: string, claimAmount: number): Observable<void> {
     const userDocRef = doc(this.firestore, `users/${uid}`);
-    const now = new Date();
     
     return this.ngZone.run(() => {
-      return from(getDoc(userDocRef)).pipe(
-        switchMap(docSnap => {
-          if (!docSnap.exists()) {
-            return of(undefined);
-          }
-          
-          const userData = docSnap.data() as User;
-          const lastClaimDate = userData.lastFaucetClaim ? 
-            (userData.lastFaucetClaim instanceof Date ? 
-              userData.lastFaucetClaim : 
+      // Utilizzo di runTransaction per garantire l'atomicità dell'operazione
+      return from(runTransaction(this.firestore, async (transaction) => {
+        // Ottieni i dati utente all'interno della transazione per avere i dati più recenti
+        const userDocSnap = await transaction.get(userDocRef);
+        
+        if (!userDocSnap.exists()) {
+          throw new Error('User document does not exist');
+        }
+        
+        const userData = userDocSnap.data() as User;
+        const lastClaimDate = userData.lastFaucetClaim ? 
+          (userData.lastFaucetClaim instanceof Date ? 
+            userData.lastFaucetClaim : 
+            (typeof userData.lastFaucetClaim === 'object' && userData.lastFaucetClaim && 'toDate' in userData.lastFaucetClaim) ? 
+              // Use optional chaining and type assertion to handle Firestore timestamp
+              (userData.lastFaucetClaim as { toDate(): Date }).toDate() : 
               new Date(userData.lastFaucetClaim)) : 
-            null;
-          const lastClaimStreak = userData.lastClaimStreak ? 
-            (userData.lastClaimStreak instanceof Date ? 
-              userData.lastClaimStreak : 
-              new Date(userData.lastClaimStreak)) : 
-            null;
-            
-          // Track consecutive claims
-          let consecutiveClaims = userData.consecutiveClaims || 0;
+          null;
+        
+        // Verifica che siano trascorse 24 ore dall'ultimo claim
+        if (lastClaimDate) {
+          const now = new Date();
+          const hoursSinceLastClaim = (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
           
-          // If there was a previous claim, check if streak is maintained
-          if (lastClaimDate) {
-            const yesterday = new Date(now);
-            yesterday.setDate(yesterday.getDate() - 1);
-            
-            const daysSinceLastClaim = Math.floor((now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60 * 24));
-            
-            // If user claimed yesterday or today (within grace period), maintain/increase streak
-            if (daysSinceLastClaim <= 1) {
-              consecutiveClaims += 1;
-            } else {
-              // Streak broken, reset counter
-              consecutiveClaims = 1;
-            }
+          if (hoursSinceLastClaim < 24) {
+            const hoursRemaining = Math.ceil(24 - hoursSinceLastClaim);
+            throw new Error(`You can claim again in ${hoursRemaining} hours`);
+          }
+        }
+        
+        // Track consecutive claims
+        let consecutiveClaims = userData.consecutiveClaims || 0;
+        
+        // If there was a previous claim, check if streak is maintained
+        if (lastClaimDate) {
+          const now = new Date();
+          const daysSinceLastClaim = Math.floor((now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60 * 24));
+          
+          // If user claimed yesterday or today (within grace period), maintain/increase streak
+          if (daysSinceLastClaim <= 1) {
+            consecutiveClaims += 1;
           } else {
-            // First claim ever
+            // Streak broken, reset counter
             consecutiveClaims = 1;
           }
-          
-          // Calculate user's faucet tier based on consecutive claims
-          let faucetTier = 1;
-          
-          if (consecutiveClaims >= 5) {
-            faucetTier = 2;
-          }
-          
-          // Update total claimed amount
-          const totalClaimedAmount = (userData.totalClaimedAmount || 0) + claimAmount;
-          
-          // Update user data
-          return from(updateDoc(userDocRef, {
-            lastFaucetClaim: now,
-            lastClaimStreak: now,
-            consecutiveClaims: consecutiveClaims,
-            faucetTier: faucetTier,
-            totalClaimedAmount: totalClaimedAmount,
-            lastClaimAmount: claimAmount,
-            updatedAt: new Date()
-          }));
-        })
-      );
+        } else {
+          // First claim ever
+          consecutiveClaims = 1;
+        }
+        
+        // Calculate user's faucet tier based on consecutive claims
+        let faucetTier = 1;
+        
+        if (consecutiveClaims >= 5) {
+          faucetTier = 2;
+        }
+        
+        // Update total claimed amount
+        const totalClaimedAmount = (userData.totalClaimedAmount || 0) + claimAmount;
+        
+        // Update user data with serverTimestamp per maggiore sicurezza
+        transaction.update(userDocRef, {
+          lastFaucetClaim: serverTimestamp(), // Timestamp del server, non del client
+          lastClaimStreak: serverTimestamp(),
+          consecutiveClaims: consecutiveClaims,
+          faucetTier: faucetTier,
+          totalClaimedAmount: totalClaimedAmount,
+          lastClaimAmount: claimAmount,
+          updatedAt: serverTimestamp()
+        });
+      }));
     });
   }
 }
