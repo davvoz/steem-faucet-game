@@ -44,8 +44,14 @@ A modern web application that allows users to claim free STEEM tokens on a daily
    ```
 
 3. Configure environment variables
-   - Update `src/environments/environment.ts` with your Firebase credentials
+   - Copy the template files to create your environment files:
+     ```bash
+     cp src/environments/environment.template.ts src/environments/environment.ts
+     cp src/environments/environment.prod.template.ts src/environments/environment.prod.ts
+     ```
+   - Update the environment files with your Firebase credentials
    - Update Steem API endpoints if needed
+   - **Note**: These environment files are ignored by git to prevent exposing sensitive information
 
 4. Initialize the database (only required once)
    ```bash
@@ -78,6 +84,15 @@ This project is set up for Firebase Hosting deployment:
 npm run build
 firebase deploy
 ```
+
+## Environment Variables Security
+
+This project uses template files for environment configurations to avoid exposing sensitive API keys and credentials on GitHub:
+
+1. Environment template files (`environment.template.ts` and `environment.prod.template.ts`) are committed to the repository with placeholder values
+2. Actual environment files (`environment.ts` and `environment.prod.ts`) are excluded via `.gitignore`
+3. Developers should create their own environment files locally based on the templates
+4. For CI/CD pipelines, use GitHub Secrets or similar mechanisms to inject environment values
 
 ## Automated Claim Processing
 
