@@ -12,13 +12,13 @@
 
 // Definizione dei temi
 :root {
-  // Tema chiaro (default)
-  --color-primary: #1a73e8;
-  --color-primary-light: #4285f4;
-  --color-primary-dark: #0d47a1;
-  --color-accent: #fb8c00;
-  --color-accent-light: #ffbd45;
-  --color-accent-dark: #c25e00;
+  // Tema chiaro (default) - cur8 palette (verde -> arancione)
+  --color-primary: #2e8b57; // Verde medio per il primario
+  --color-primary-light: #3cb371; // Verde più chiaro
+  --color-primary-dark: #1d6b41; // Verde più scuro
+  --color-accent: #ff8c00; // Arancione per accent
+  --color-accent-light: #ffa54f; // Arancione più chiaro
+  --color-accent-dark: #d27000; // Arancione più scuro
   
   --color-background: #f8f9fa;
   --color-surface: #ffffff;
@@ -48,17 +48,20 @@
   --transition-speed: 0.2s;
   --layout-max-width: 1200px;
 
-  --steemit-color: #4aa1f1;
+  --cur8-color: #2e8b57;
+  
+  // Gradient del brand cur8 (da verde ad arancione)
+  --cur8-gradient: linear-gradient(135deg, var(--color-primary), var(--color-accent));
 }
 
 // Tema scuro
 .dark-theme {
-  --color-primary: #5086db;
-  --color-primary-light: #7dabf5;
-  --color-primary-dark: #2c5aa0;
-  --color-accent: #ff9d2f;
-  --color-accent-light: #ffb25b;
-  --color-accent-dark: #cc7c00;
+  --color-primary: #3cb371; // Verde più brillante per dark mode
+  --color-primary-light: #66cdaa; // Verde acqua più chiaro
+  --color-primary-dark: #2e8b57; // Verde medio
+  --color-accent: #ff8c00; // Arancione
+  --color-accent-light: #ffa54f; // Arancione più chiaro
+  --color-accent-dark: #ff7f00; // Arancione più intenso
 
   --color-background: #202124;
   --color-surface: #303134;
@@ -79,6 +82,9 @@
   --shadow-small: 0 1px 3px rgba(0,0,0,0.24), 0 1px 2px rgba(0,0,0,0.28);
   --shadow-medium: 0 4px 6px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.16);
   --shadow-large: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.1);
+  
+  // Gradient più luminoso per il dark mode elegante
+  --cur8-gradient: linear-gradient(135deg, var(--color-primary-light), var(--color-accent-light));
 }
 
 // Stili globali
@@ -249,12 +255,11 @@ input, select, textarea {
 .mb-4 { margin-bottom: 1.5rem; }
 .mb-5 { margin-bottom: 2rem; }
 
-// Stili per il tema Steem
-.steem-gradient {
-  background: linear-gradient(135deg, var(--steemit-color), var(--color-primary-dark));
-}
-
 // Stili di transizione per il cambio tema
 .theme-transition {
   transition: all var(--transition-speed) ease;
+}
+
+.footer-section  p{
+  color: var(--color-primary-light) !important;
 }
