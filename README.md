@@ -1,63 +1,105 @@
-# SteemFaucet
+# Steem Faucet Game
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+[![Process Steem Claims](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml)
 
-## Overview
+A modern web application that allows users to claim free STEEM tokens on a daily basis, built with Angular and Firebase.
 
-SteemFaucet is a web application that allows users to claim free STEEM tokens on a daily basis. The application features a user authentication system, a faucet claim mechanism, and a tiered reward system based on consecutive daily claims.
+## Features
 
-## Development server
+- **Daily Token Claims**: Users can claim free STEEM tokens once per day
+- **Tiered Reward System**: Increased rewards for consistent daily participation
+- **User Authentication**: Secure login system powered by Firebase
+- **Real-time Updates**: Immediate feedback on claim status
+- **Responsive Design**: Works seamlessly on mobile and desktop devices
+- **Dark/Light Theme**: User-selectable interface theme
+- **Claim History**: Track your past claims and rewards
+- **Community Stats**: View total tokens distributed and user participation
 
-To start a local development server, run:
+## Tech Stack
+
+- **Frontend**: Angular 19+
+- **Backend**: Firebase (Firestore, Authentication)
+- **Blockchain Integration**: Steem API via dsteem
+- **Automation**: GitHub Actions for processing claims
+- **Styling**: SCSS with responsive design
+
+## Prerequisites
+
+- Node.js (v18+)
+- npm (v9+)
+- Angular CLI (v19+)
+- Firebase CLI (for deployment)
+
+## Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/steem-faucet-game.git
+   cd steem-faucet-game
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables
+   - Update `src/environments/environment.ts` with your Firebase credentials
+   - Update Steem API endpoints if needed
+
+4. Initialize the database (only required once)
+   ```bash
+   node init-database.js
+   ```
+
+## Development Server
+
+Start the development server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/` in your browser. The application will automatically reload when you make changes to the source files.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Building for Production
 
 ```bash
-ng generate component component-name
+ng build --configuration production
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The build artifacts will be stored in the `dist/` directory.
+
+## Deployment
+
+This project is set up for Firebase Hosting deployment:
 
 ```bash
-ng generate --help
+npm run build
+firebase deploy
 ```
 
-## Building
+## Automated Claim Processing
 
-To build the project run:
+The project includes a GitHub Actions workflow that processes pending Steem claims automatically. This ensures users receive their STEEM tokens even when they close their browser after submitting a claim.
 
-```bash
-ng build
-```
+## Project Structure
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `/src/app/core` - Core services for authentication, Steem interactions, and notifications
+- `/src/app/features` - Main application features (faucet, admin panel)
+- `/src/app/shared` - Shared components and services
+- `/scripts` - Background processing scripts
 
-## Running unit tests
+## Contributing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-```bash
-ng test
-```
+## License
 
-## Running end-to-end tests
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-For end-to-end (e2e) testing, run:
+## Acknowledgments
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- The Steem blockchain community
+- Firebase for providing the backend infrastructure
+- Angular team for the excellent framework
