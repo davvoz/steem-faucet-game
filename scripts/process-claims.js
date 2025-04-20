@@ -39,7 +39,7 @@ const steemNodes = ['https://api.steemit.com', 'https://rpc.steemviz.com', 'http
 const client = new Client(steemNodes[0]);
 
 // Credenziali Steem (dal wallet micro.cur8)
-const steemAccount = 'luciojolly';
+const steemAccount = 'faucet.cur8';
 const steemPrivateKey = PrivateKey.fromString(process.env.STEEM_PRIVATE_KEY);
 
 // Funzione principale
@@ -84,7 +84,7 @@ async function processClaims() {
         console.log(`Invio di ${amountString} a ${claim.steemUsername}`);
         
         const transfer = await client.broadcast.transfer({
-          from: 'luciojolly',
+          from: 'faucet.cur8',
           to: claim.steemUsername,
           amount: amountString,
           memo: memo
