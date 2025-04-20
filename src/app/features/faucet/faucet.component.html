@@ -107,7 +107,10 @@
           <i class="fas fa-times-circle" *ngIf="claim.status === 'failed'"></i>
         </div>
         <div class="claim-user">
-          <i class="fas fa-user"></i> {{ claim.steemUsername }}
+          <i class="fas fa-user"></i> 
+          <a [href]="'https://cur8.fun/#/@' + claim.steemUsername" target="_blank" class="username-link" title="View profile on cur8.fun">
+            {{ claim.steemUsername }}
+          </a>
         </div>
         <div class="claim-amount">
           {{ claim.amount | number:'1.3-3' }} STEEM
@@ -130,7 +133,10 @@
     <div class="claims-list" *ngIf="recentClaims.length > 0; else noClaims">
       <div class="claim-item" *ngFor="let claim of recentClaims">
         <div class="claim-user">
-          <i class="fas fa-user"></i> {{ claim.steemUsername }}
+          <i class="fas fa-user"></i> 
+          <a [href]="'https://cur8.fun/#/@' + claim.steemUsername" target="_blank" class="username-link" title="View profile on cur8.fun">
+            {{ claim.steemUsername }}
+          </a>
         </div>
         <div class="claim-amount">
           {{ claim.amount | number:'1.3-3' }} STEEM
