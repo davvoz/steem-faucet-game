@@ -33,13 +33,14 @@ export class FaucetComponent implements OnInit, OnDestroy {
   baseTierReward = 0.002; // Tier 1 max
   tier2Reward = 0.005;    // Tier 2 max
   
-  // Stats
-  totalDistributed = 5.427;  // Would come from service
-  totalUsers = 278;          // Would come from service
+  // Sostituisco i valori hardcoded con proprietà che verranno aggiornate dal database
+  totalDistributed = 0;  // Verrà impostato dal servizio
+  totalUsers = 0;        // Verrà impostato dal servizio
 
   // Subscriptions
   private timerSubscription: Subscription | null = null;
   private userSubscription: Subscription | null = null;
+  private statsSubscription: Subscription | null = null;
 
   // Aggiungo variabili per le richieste pendenti
   pendingClaims: any[] = [];
@@ -79,6 +80,9 @@ export class FaucetComponent implements OnInit, OnDestroy {
     this.checkingPendingClaimsInterval = setInterval(() => {
       this.checkPendingClaims();
     }, 120000); // 2 minuti
+    
+    // Carica le statistiche del faucet
+    this.loadFaucetStats();
   }
   
   ngOnDestroy(): void {
@@ -92,6 +96,10 @@ export class FaucetComponent implements OnInit, OnDestroy {
     // Pulisci l'intervallo di controllo delle richieste pendenti
     if (this.checkingPendingClaimsInterval) {
       clearInterval(this.checkingPendingClaimsInterval);
+    }
+    
+    if (this.statsSubscription) {
+      this.statsSubscription.unsubscribe();
     }
   }
   
@@ -296,11 +304,17 @@ export class FaucetComponent implements OnInit, OnDestroy {
     }, 500);
   }
   
-  // New method to load faucet statistics
+  // Metodo per caricare le statistiche del faucet
   loadFaucetStats(): void {
-    // In a real app, this would call an API endpoint
-    // For this example, we'll just simulate updated stats
-    this.totalUsers += 1; // Increment user count
+    this.statsSubscription = this.steemService.getFaucetStats().subscribe({
+      next: (stats) => {
+        this.totalDistributed = stats.totalDistributed;
+        this.totalUsers = stats.totalUsers;
+      },
+      error: (error) => {
+        console.error('Error loading faucet stats:', error);
+      }
+    });
   }
 
   calculateActualReward(): number {

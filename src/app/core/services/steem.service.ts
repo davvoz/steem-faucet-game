@@ -250,4 +250,22 @@ export class SteemService {
       })))
     );
   }
+  
+  // Metodo per ottenere le statistiche del faucet
+  getFaucetStats(): Observable<{totalDistributed: number, totalUsers: number}> {
+    const statsRef = doc(this.firestore, 'stats', 'faucet');
+    
+    return from(getDoc(statsRef)).pipe(
+      map(docSnap => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          return {
+            totalDistributed: data['totalDistributed'] || 0,
+            totalUsers: data['totalUsers'] || 0
+          };
+        }
+        return { totalDistributed: 0, totalUsers: 0 };
+      })
+    );
+  }
 }

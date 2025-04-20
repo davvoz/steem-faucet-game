@@ -1,14 +1,15 @@
 {
-  "name": "steem-faucet-scripts",
+  "name": "steem-faucet-game-scripts",
   "version": "1.0.0",
-  "description": "Scripts per processare transazioni Steem",
+  "description": "Scripts per la gestione del faucet Steem",
   "main": "process-claims.js",
   "scripts": {
-    "start": "node process-claims.js"
+    "process-claims": "node process-claims.js",
+    "init-database": "node init-database.js"
   },
   "dependencies": {
     "dsteem": "^0.11.3",
     "dotenv": "^16.0.3",
-    "firebase-admin": "^12.6.0"
+    "firebase-admin": "^11.5.0"
   }
 }

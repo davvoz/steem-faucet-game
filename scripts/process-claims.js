@@ -128,6 +128,59 @@ async function updateClaimStatus(claimId, status, errorMessage = null, transacti
   }
   
   await db.collection('faucet_claims').doc(claimId).update(updateData);
+  
+  // Se la richiesta è stata completata con successo, aggiorniamo le statistiche
+  if (status === 'completed') {
+    const claimDoc = await db.collection('faucet_claims').doc(claimId).get();
+    const claimData = claimDoc.data();
+    await updateFaucetStats(claimData.amount, claimData.steemUsername);
+  }
+}
+
+// Funzione per aggiornare le statistiche del faucet
+async function updateFaucetStats(amount, username) {
+  try {
+    const statsRef = db.collection('stats').doc('faucet');
+    
+    // Utilizzo di una transazione per garantire l'atomicità dell'aggiornamento
+    await db.runTransaction(async (transaction) => {
+      const statsDoc = await transaction.get(statsRef);
+      
+      if (!statsDoc.exists) {
+        // Se il documento non esiste, lo creiamo con valori iniziali
+        transaction.set(statsRef, {
+          totalDistributed: amount,
+          totalUsers: 1,
+          uniqueUsers: [username]
+        });
+      } else {
+        // Altrimenti, aggiorniamo i valori esistenti
+        const data = statsDoc.data();
+        const uniqueUsers = data.uniqueUsers || [];
+        
+        // Aggiorniamo il totale distribuito
+        const newTotal = (data.totalDistributed || 0) + amount;
+        
+        // Verifichiamo se è un nuovo utente
+        let newUserCount = data.totalUsers || 0;
+        if (!uniqueUsers.includes(username)) {
+          uniqueUsers.push(username);
+          newUserCount++;
+        }
+        
+        // Aggiorniamo il documento
+        transaction.update(statsRef, {
+          totalDistributed: newTotal,
+          totalUsers: newUserCount,
+          uniqueUsers: uniqueUsers
+        });
+      }
+    });
+    
+    console.log('✅ Statistiche faucet aggiornate con successo');
+  } catch (error) {
+    console.error('❌ Errore durante l\'aggiornamento delle statistiche:', error);
+  }
 }
 
 // Invia una notifica FCM all'utente
