@@ -1,6 +1,7 @@
 # Steem Faucet Game
 
 [![Process Steem Claims](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/process-steem-claims.yml)
+[![Deploy to GitHub Pages](https://github.com/davvoz/steem-faucet-game/actions/workflows/deploy-github-pages.yml/badge.svg)](https://github.com/davvoz/steem-faucet-game/actions/workflows/deploy-github-pages.yml)
 
 A modern web application that allows users to claim free STEEM tokens on a daily basis, built with Angular and Firebase.
 
@@ -78,11 +79,27 @@ The build artifacts will be stored in the `dist/` directory.
 
 ## Deployment
 
+### Firebase Hosting
+
 This project is set up for Firebase Hosting deployment:
 
 ```bash
 npm run build
 firebase deploy
+```
+
+### GitHub Pages
+
+The project is also configured to deploy to GitHub Pages automatically:
+
+1. The deployment is triggered on every push to the main branch
+2. You can monitor the deployment status with the badge at the top of this README
+3. The live site is available at: https://davvoz.github.io/steem-faucet-game/
+
+For manual deployment to GitHub Pages:
+
+```bash
+ng deploy --base-href=/steem-faucet-game/
 ```
 
 ## Environment Variables Security
