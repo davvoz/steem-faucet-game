@@ -1,28 +1,28 @@
 /* Root variables */
 :root {
-  --primary-color: #1a237e;
-  --primary-light: #283593;
-  --primary-dark: #0d1257;
-  --accent-color: #ff5722;
-  --accent-hover: #e64a19;
-  --text-dark: #333;
-  --text-light: #666;
-  --background-light: #f5f5f5;
-  --white: #ffffff;
-  --border-color: #eee;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-strong: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.05);
-  --shadow-header: 0 2px 15px rgba(26, 35, 126, 0.08);
-  --gradient-primary: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
-  --gradient-accent: linear-gradient(135deg, #ff5722 0%, #ff8a65 100%);
-  --gradient-menu-active: linear-gradient(90deg, #ff5722, #ff8a65);
-  --transition-fast: 0.2s ease;
-  --transition-medium: 0.3s ease;
+  --primary-color: var(--color-primary);
+  --primary-light: var(--color-primary-light);
+  --primary-dark: var(--color-primary-dark);
+  --accent-color: var(--color-accent);
+  --accent-hover: var(--color-accent-dark);
+  --text-dark: var(--color-text-primary);
+  --text-light: var(--color-text-secondary);
+  --background-light: var(--color-background);
+  --white: var(--color-surface);
+  --border-color: var(--color-divider);
+  --shadow: var(--shadow-small);
+  --shadow-strong: var(--shadow-large);
+  --shadow-subtle: var(--shadow-small);
+  --shadow-header: 0 2px 15px rgba(46, 139, 87, 0.08);
+  --gradient-primary: var(--cur8-gradient);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+  --gradient-menu-active: linear-gradient(90deg, var(--color-accent), var(--color-accent-light));
+  --transition-fast: var(--transition-speed);
+  --transition-medium: calc(var(--transition-speed) * 1.5);
   --transition-slow: 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: var(--rounded-small);
+  --radius-md: var(--rounded-medium);
+  --radius-lg: var(--rounded-large);
   --radius-xl: 24px;
   --header-height: 70px;
 }
@@ -35,7 +35,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: var(--background-light);
   color: var(--text-dark);
   overflow-x: hidden;
@@ -53,14 +53,14 @@ body.menu-open {
 }
 
 .app-header {
-  background-color: var(--color-surface-elevated); /* Assicura il colore bianco solido */
+  background-color: var(--color-surface); 
   box-shadow: var(--shadow-header);
   position: sticky;
   top: 0;
   z-index: 100;
   padding: 0.75rem 0;
   transition: all var(--transition-medium);
-  opacity: 1; /* Assicura che non ci sia trasparenza */
+  opacity: 1;
 }
 
 /* Media queries - Versione mobile */
@@ -107,23 +107,32 @@ body.menu-open {
   display: none; /* Nascosto di default su desktop */
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
-  height: 20px;
-  background: var(--accent-color);
-  color: var(--primary-color);
+  width: 30px;
+  height: 25px;
+  background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   z-index: 1100;
-  margin-left: 15px;
 }
 
+.app-header .mobile-menu-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Stilizzazione delle barre del menu hamburger */
 .app-header .mobile-menu-toggle .bar {
-  height: 3px;
-  width: 100%;
-  background-color: var(--text-dark);
-  border-radius: 10px;
-  transition: all var(--transition-medium);
+  width: 90%;
+  height: 4px;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-radius: 2px;
+  margin: 0  auto;
+}
+
+/* Rimuoviamo il margine dall'ultima barra */
+.app-header .mobile-menu-toggle .bar:last-child {
+  margin-bottom: 0;
 }
 
 /* Navigation container */
@@ -156,11 +165,15 @@ body.menu-open {
   text-decoration: none;
 }
 
+.app-header .nav-container .main-nav ul li a:hover,
+.app-header .nav-container .main-nav ul li a.active {
+  color: var(--primary-color);
+  background-color: rgba(46, 139, 87, 0.1);
+}
+
 .app-header .nav-container .main-nav ul li a .nav-icon {
   font-size: 1rem;
 }
-
-
 
 /* User actions section */
 .app-header .nav-container .user-actions {
@@ -175,7 +188,7 @@ body.menu-open {
 
 .app-header .nav-container .user-actions .login-btn {
   background-color: var(--primary-color);
-  color: var(--white);
+  color: var(--color-text-on-primary);
   border: none;
   border-radius: var(--radius-md);
   padding: 0.5rem 1rem;
@@ -222,7 +235,7 @@ body.menu-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
+  color: var(--color-text-on-primary);
   font-weight: 600;
 }
 
@@ -259,8 +272,8 @@ body.menu-open {
 }
 
 .app-header .nav-container .user-actions .user-profile .logout-btn:hover {
-  color: #f44336;
-  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--color-error);
+  background-color: rgba(var(--color-error-rgb), 0.1);
 }
 
 /* Mobile menu overlay */
@@ -416,13 +429,13 @@ body.menu-open {
 /* Animations */
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(26, 35, 126, 0.7);
+    box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(26, 35, 126, 0);
+    box-shadow: 0 0 0 10px rgba(46, 139, 87, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(26, 35, 126, 0);
+    box-shadow: 0 0 0 0 rgba(46, 139, 87, 0);
   }
 }
 
@@ -447,12 +460,9 @@ body.menu-open {
   
   /* Show hamburger menu button */
   .app-header .mobile-menu-toggle {
-    background-color: (var(--color-primary));
     display: flex; /* Mostrato su mobile */
     position: relative;
     z-index: 1100;
-   
-
   }
   
   /* Stili per il logo su mobile */
@@ -463,16 +473,17 @@ body.menu-open {
   
   /* Hamburger menu button animation */
   .app-header .mobile-menu-toggle.active .bar:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 6px);
+    transform: translateY(8px) rotate(45deg);
     background-color: var(--accent-color);
   }
   
   .app-header .mobile-menu-toggle.active .bar:nth-child(2) {
     opacity: 0;
+    transform: translateX(-20px);
   }
   
   .app-header .mobile-menu-toggle.active .bar:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -6px);
+    transform: translateY(-8px) rotate(-45deg);
     background-color: var(--accent-color);
   }
   
@@ -584,34 +595,23 @@ body.menu-open {
 }
 
 :host {
-  --bright-blue: oklch(51.01% 0.274 263.83);
-  --electric-violet: oklch(53.18% 0.28 296.97);
-  --french-violet: oklch(47.66% 0.246 305.88);
-  --vivid-pink: oklch(69.02% 0.277 332.77);
-  --hot-red: oklch(61.42% 0.238 15.34);
-  --orange-red: oklch(63.32% 0.24 31.68);
+  --bright-blue: var(--color-primary-light);
+  --electric-violet: var(--color-primary); 
+  --french-violet: var(--color-primary-dark);
+  --vivid-pink: var(--color-accent-light);
+  --hot-red: var(--color-accent);
+  --orange-red: var(--color-accent-dark);
 
-  --gray-900: oklch(19.37% 0.006 300.98);
-  --gray-700: oklch(36.98% 0.014 302.71);
-  --gray-400: oklch(70.9% 0.015 304.04);
+  --gray-900: var(--color-text-primary);
+  --gray-700: var(--color-text-secondary);
+  --gray-400: var(--color-text-tertiary);
 
-  --red-to-pink-to-purple-vertical-gradient: linear-gradient(
-    180deg,
-    var(--orange-red) 0%,
-    var(--vivid-pink) 50%,
-    var(--electric-violet) 100%
-  );
-
-  --red-to-pink-to-purple-horizontal-gradient: linear-gradient(
-    90deg,
-    var(--orange-red) 0%,
-    var(--vivid-pink) 50%,
-    var(--electric-violet) 100%
-  );
+  --red-to-pink-to-purple-vertical-gradient: var(--cur8-gradient);
+  --red-to-pink-to-purple-horizontal-gradient: var(--cur8-gradient);
 
   --pill-accent: var(--bright-blue);
 
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol";
   box-sizing: border-box;
@@ -752,11 +752,11 @@ main {
 }
 
 :root {
-  --color-primary-rgb: 26, 115, 232;
+  --color-primary-rgb: 46, 139, 87;
   --color-error-rgb: 211, 47, 47;
 }
 
 .dark-theme {
-  --color-primary-rgb: 80, 134, 219;
+  --color-primary-rgb: 60, 179, 113;
   --color-error-rgb: 242, 139, 130;
 }
