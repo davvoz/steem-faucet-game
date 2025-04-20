@@ -4,30 +4,28 @@
   padding: 20px;
   
   h1 {
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
+  
     padding-bottom: 10px;
     margin-bottom: 30px;
   }
 }
 
 .reset-section {
-  background-color: #f8f9fa;
+ 
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+ 
   
   h2 {
-    color: #2c3e50;
+   
     margin-top: 0;
   }
   
   .warning {
-    background-color: #fff3cd;
-    color: #856404;
+   
     padding: 12px;
     border-radius: 4px;
-    border-left: 4px solid #ffc107;
+   
     margin-bottom: 20px;
   }
 }
@@ -48,17 +46,13 @@
     
     .select-actions {
       button {
-        background-color: #f8f9fa;
-        border: 1px solid #ced4da;
         border-radius: 4px;
         padding: 5px 10px;
         margin-left: 10px;
         cursor: pointer;
         font-size: 0.9rem;
         
-        &:hover {
-          background-color: #e9ecef;
-        }
+       
         
         &:disabled {
           opacity: 0.6;
@@ -74,8 +68,6 @@
     gap: 10px;
     
     .collection-item {
-      background-color: #ffffff;
-      border: 1px solid #dee2e6;
       border-radius: 4px;
       padding: 10px;
       
@@ -98,8 +90,6 @@
   margin-top: 20px;
   
   .reset-button {
-    background-color: #dc3545;
-    color: white;
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
@@ -107,9 +97,6 @@
     cursor: pointer;
     transition: background-color 0.3s;
     
-    &:hover:not(:disabled) {
-      background-color: #c82333;
-    }
     
     &:disabled {
       opacity: 0.6;
@@ -123,7 +110,6 @@
   
   h3 {
     font-size: 1.1rem;
-    border-bottom: 1px solid #dee2e6;
     padding-bottom: 5px;
   }
   
