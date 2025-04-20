@@ -263,3 +263,31 @@ input, select, textarea {
 .footer-section  p{
   color: var(--color-primary-light) !important;
 }
+
+// Media queries per dispositivi mobili
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+  
+  .card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--rounded-small);
+  }
+  
+  .app-content {
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}

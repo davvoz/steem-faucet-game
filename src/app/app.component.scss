@@ -578,6 +578,19 @@ body.menu-open {
     flex-direction: row;
     align-items: center;
   }
+
+  /* Content adjustments for mobile */
+  .app-content {
+    min-height: calc(100vh - 70px - 200px); /* Riduzione altezza minima su mobile */
+    padding: 1.5rem 0;
+  }
+  
+  /* Card adjustments for mobile */
+  .card {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    width: calc(100% + 1rem);
+  }
 }
 
 @media (max-width: 576px) {
@@ -591,6 +604,23 @@ body.menu-open {
   
   .app-header .nav-container {
     width: 85%;
+  }
+
+  /* Further content adjustments for small mobile */
+  .app-content {
+    padding: 1rem 0;
+  }
+  
+  /* Further card adjustments for small mobile */
+  .card {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    width: calc(100% + 1.5rem);
+  }
+  
+  /* Adjust padding in container for better space usage */
+  .container {
+    padding: 0 0.75rem;
   }
 }
 
