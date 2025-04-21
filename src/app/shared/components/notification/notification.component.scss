@@ -1,3 +1,40 @@
+// Variabili per i tipi di notifiche
+$notification-types: (
+  'success': var(--color-success),
+  'error': var(--color-error),
+  'warning': var(--color-warning),
+  'info': var(--color-info)
+);
+
+// Mixin per le animazioni di slide
+@mixin slide-animation($direction) {
+  @if $direction == 'in' {
+    animation: slide-in 0.3s ease;
+    @keyframes slide-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  } @else {
+    animation: slide-out 0.3s ease forwards;
+    @keyframes slide-out {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  }
+}
+
 .notifications-container {
   position: fixed;
   top: 20px;
@@ -19,59 +56,26 @@
   position: relative;
   overflow: hidden;
   border-left: 4px solid transparent;
-  animation: slide-in 0.3s ease;
+  @include slide-animation('in');
   transition: all var(--transition-speed) ease;
 
-  &.success {
-    border-left-color: var(--color-success);
-    
-    .notification-icon {
-      color: var(--color-success);
-    }
-    
-    .notification-progress-bar {
-      background-color: var(--color-success);
-    }
-  }
-  
-  &.error {
-    border-left-color: var(--color-error);
-    
-    .notification-icon {
-      color: var(--color-error);
-    }
-    
-    .notification-progress-bar {
-      background-color: var(--color-error);
-    }
-  }
-  
-  &.warning {
-    border-left-color: var(--color-warning);
-    
-    .notification-icon {
-      color: var(--color-warning);
-    }
-    
-    .notification-progress-bar {
-      background-color: var(--color-warning);
-    }
-  }
-  
-  &.info {
-    border-left-color: var(--color-info);
-    
-    .notification-icon {
-      color: var(--color-info);
-    }
-    
-    .notification-progress-bar {
-      background-color: var(--color-info);
+  // Genera stili per i tipi di notifiche con loop SCSS
+  @each $type, $color in $notification-types {
+    &.#{$type} {
+      border-left-color: #{$color};
+      
+      .notification-icon {
+        color: #{$color};
+      }
+      
+      .notification-progress-bar {
+        background-color: #{$color};
+      }
     }
   }
   
   &.removing {
-    animation: slide-out 0.3s ease forwards;
+    @include slide-animation('out');
   }
 }
 
@@ -138,28 +142,6 @@
   }
   100% {
     transform: scaleX(0);
-  }
-}
-
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-out {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
   }
 }
 

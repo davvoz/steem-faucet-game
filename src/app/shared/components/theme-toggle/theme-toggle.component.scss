@@ -1,3 +1,19 @@
+// Mixins per la transizione delle icone
+@mixin icon-transition($active: false) {
+  position: absolute;
+  font-size: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  @if $active {
+    opacity: 1;
+    transform: scale(1);
+  } @else {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+// Stile del pulsante di toggle theme ottimizzato
 .theme-toggle-btn {
   background: none;
   border: none;
@@ -26,11 +42,7 @@
     justify-content: center;
     
     i {
-      position: absolute;
-      font-size: 1.25rem;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      @include icon-transition;
       
       &.light-icon {
         color: var(--color-warning);
@@ -41,8 +53,7 @@
       }
       
       &.active {
-        opacity: 1;
-        transform: scale(1);
+        @include icon-transition(true);
       }
     }
   }

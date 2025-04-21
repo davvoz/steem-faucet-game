@@ -10,121 +10,164 @@
   box-sizing: border-box;
 }
 
-// Definizione dei temi
+// SCSS Variables - più efficienti delle variabili CSS per lo sviluppo
+$color-primary: #2e8b57;
+$color-primary-light: #3cb371;
+$color-primary-dark: #1d6b41;
+$color-accent: #ff8c00;
+$color-accent-light: #ffa54f;
+$color-accent-dark: #d27000;
+
+$color-background-light: #f8f9fa;
+$color-surface-light: #ffffff;
+$color-text-primary-light: #202124;
+$color-text-secondary-light: #5f6368;
+$color-text-tertiary-light: #9aa0a6;
+
+$color-background-dark: #202124;
+$color-surface-dark: #303134;
+$color-surface-elevated-dark: #3c4043;
+$color-text-primary-dark: #e8eaed;
+$color-text-secondary-dark: #bdc1c6;
+$color-text-tertiary-dark: #9aa0a6;
+
+$color-error: #d32f2f;
+$color-success: #388e3c;
+$color-warning: #f57c00;
+$color-info: #0288d1;
+
+$shadow-small: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+$shadow-medium: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08);
+$shadow-large: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+
+$rounded-small: 4px;
+$rounded-medium: 8px;
+$rounded-large: 16px;
+$rounded-full: 9999px;
+
+$transition-speed: 0.2s;
+$layout-max-width: 1200px;
+
+// Mixins per evitare ripetizioni di codice
+@mixin theme-transition {
+  transition: background-color $transition-speed ease, 
+              color $transition-speed ease;
+}
+
+@mixin card-hover {
+  &:hover {
+    box-shadow: $shadow-medium;
+  }
+}
+
+@mixin button-base {
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: $rounded-medium;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-speed ease;
+  box-shadow: $shadow-small;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+// Definizione dei temi con variabili CSS più mirate
 :root {
   // Tema chiaro (default) - cur8 palette (verde -> arancione)
-  --color-primary: #2e8b57; // Verde medio per il primario
-  --color-primary-light: #3cb371; // Verde più chiaro
-  --color-primary-dark: #1d6b41; // Verde più scuro
-  --color-accent: #ff8c00; // Arancione per accent
-  --color-accent-light: #ffa54f; // Arancione più chiaro
-  --color-accent-dark: #d27000; // Arancione più scuro
+  --color-primary: #{$color-primary};
+  --color-primary-light: #{$color-primary-light};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-accent: #{$color-accent};
+  --color-accent-light: #{$color-accent-light};
+  --color-accent-dark: #{$color-accent-dark};
   
-  --color-background: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
+  --color-background: #{$color-background-light};
+  --color-surface: #{$color-surface-light};
+  --color-surface-elevated: #{$color-surface-light};
   --color-divider: #e0e0e0;
   
-  --color-text-primary: #202124;
-  --color-text-secondary: #5f6368;
-  --color-text-tertiary: #9aa0a6;
+  --color-text-primary: #{$color-text-primary-light};
+  --color-text-secondary: #{$color-text-secondary-light};
+  --color-text-tertiary: #{$color-text-tertiary-light};
   --color-text-on-primary: #ffffff;
   --color-text-on-accent: #ffffff;
   
-  --color-error: #d32f2f;
-  --color-success: #388e3c;
-  --color-warning: #f57c00;
-  --color-info: #0288d1;
+  --color-error: #{$color-error};
+  --color-success: #{$color-success};
+  --color-warning: #{$color-warning};
+  --color-info: #{$color-info};
   
-  --shadow-small: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
-  --shadow-medium: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08);
-  --shadow-large: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-small: #{$shadow-small};
+  --shadow-medium: #{$shadow-medium};
+  --shadow-large: #{$shadow-large};
   
-  --rounded-small: 4px;
-  --rounded-medium: 8px;
-  --rounded-large: 16px;
-  --rounded-full: 9999px;
+  --rounded-small: #{$rounded-small};
+  --rounded-medium: #{$rounded-medium};
+  --rounded-large: #{$rounded-large};
+  --rounded-full: #{$rounded-full};
   
-  --transition-speed: 0.2s;
-  --layout-max-width: 1200px;
+  --transition-speed: #{$transition-speed};
+  --layout-max-width: #{$layout-max-width};
 
-  --cur8-color: #2e8b57;
-  
-  // Gradient del brand cur8 (da verde ad arancione)
+  --cur8-color: #{$color-primary};
   --cur8-gradient: linear-gradient(135deg, var(--color-primary), var(--color-accent));
 }
 
-// Tema scuro
+// Tema scuro - usa le SCSS variables per ridurre ripetizioni
 .dark-theme {
-  --color-primary: #3cb371; // Verde più brillante per dark mode
-  --color-primary-light: #66cdaa; // Verde acqua più chiaro
-  --color-primary-dark: #2e8b57; // Verde medio
-  --color-accent: #ff8c00; // Arancione
-  --color-accent-light: #ffa54f; // Arancione più chiaro
-  --color-accent-dark: #ff7f00; // Arancione più intenso
+  --color-primary: #{$color-primary-light};
+  --color-primary-light: #66cdaa;
+  --color-primary-dark: #{$color-primary};
+  --color-accent: #{$color-accent};
+  --color-accent-light: #{$color-accent-light};
+  --color-accent-dark: #ff7f00;
 
-  --color-background: #202124;
-  --color-surface: #303134;
-  --color-surface-elevated: #3c4043;
-  --color-divider: #5f6368;
+  --color-background: #{$color-background-dark};
+  --color-surface: #{$color-surface-dark};
+  --color-surface-elevated: #{$color-surface-elevated-dark};
+  --color-divider: #{$color-text-secondary-dark};
   
-  --color-text-primary: #e8eaed;
-  --color-text-secondary: #bdc1c6;
-  --color-text-tertiary: #9aa0a6;
-  --color-text-on-primary: #ffffff;
-  --color-text-on-accent: #ffffff;
-  
-  --color-error: #f28b82;
-  --color-success: #81c995;
-  --color-warning: #fdd663;
-  --color-info: #8ab4f8;
+  --color-text-primary: #{$color-text-primary-dark};
+  --color-text-secondary: #{$color-text-secondary-dark};
+  --color-text-tertiary: #{$color-text-tertiary-dark};
   
   --shadow-small: 0 1px 3px rgba(0,0,0,0.24), 0 1px 2px rgba(0,0,0,0.28);
   --shadow-medium: 0 4px 6px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.16);
   --shadow-large: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.1);
   
-  // Gradient più luminoso per il dark mode elegante
   --cur8-gradient: linear-gradient(135deg, var(--color-primary-light), var(--color-accent-light));
 }
 
-// Stili globali
+// Stili globali - evita ripetizioni con SCSS nesting
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--color-background);
   color: var(--color-text-primary);
   line-height: 1.6;
-  transition: background-color var(--transition-speed) ease, 
-              color var(--transition-speed) ease;
+  @include theme-transition;
   min-height: 100vh;
 }
 
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color var(--transition-speed) ease;
+  transition: color $transition-speed ease;
   
   &:hover {
     color: var(--color-primary-light);
   }
 }
 
-// Stili generici per bottoni
+// Stili generici per bottoni - usa il mixin
 button, .btn {
-  font-family: 'Poppins', sans-serif;
+  @include button-base;
   background-color: var(--color-primary);
   color: var(--color-text-on-primary);
-  border: none;
-  border-radius: var(--rounded-medium);
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  box-shadow: var(--shadow-small);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
   
   &:hover {
     background-color: var(--color-primary-dark);
@@ -146,7 +189,7 @@ button, .btn {
     border: 1px solid var(--color-primary);
     
     &:hover {
-      background-color: rgba(var(--color-primary), 0.1);
+      background-color: rgba(0, 0, 0, 0.05);
     }
   }
   
@@ -177,21 +220,19 @@ button, .btn {
   padding: 0 1rem;
 }
 
-// Stili per le card
+// Stili per le card - usa il mixin per hover
 .card {
   background-color: var(--color-surface);
   border-radius: var(--rounded-medium);
   box-shadow: var(--shadow-small);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  transition: all var(--transition-speed) ease;
+  transition: all $transition-speed ease;
   
-  &:hover {
-    box-shadow: var(--shadow-medium);
-  }
+  @include card-hover;
 }
 
-// Stili per form e input
+// Stili per form e input - migliorato con SCSS nesting
 input, select, textarea {
   font-family: 'Poppins', sans-serif;
   width: 100%;
@@ -200,12 +241,12 @@ input, select, textarea {
   border-radius: var(--rounded-small);
   background-color: var(--color-surface);
   color: var(--color-text-primary);
-  transition: all var(--transition-speed) ease;
+  transition: all $transition-speed ease;
   
   &:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+    box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.2);
   }
   
   &:disabled {
@@ -224,7 +265,7 @@ input, select, textarea {
   to { opacity: 1; }
 }
 
-// Animazioni per il loader/spinner
+// Spinner con SCSS nesting migliorato
 .spinner {
   display: inline-block;
   
@@ -238,34 +279,59 @@ input, select, textarea {
   to { transform: rotate(360deg); }
 }
 
-// Utility classes
+// Utility classes con generazione SCSS per risparmiare codice
+$spacings: (
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 1rem,
+  4: 1.5rem,
+  5: 2rem
+);
+
+// Genera classi di margine con loop SCSS
+@each $key, $value in $spacings {
+  .mt-#{$key} { margin-top: $value; }
+  .mb-#{$key} { margin-bottom: $value; }
+  .ml-#{$key} { margin-left: $value; }
+  .mr-#{$key} { margin-right: $value; }
+  .mx-#{$key} { margin-left: $value; margin-right: $value; }
+  .my-#{$key} { margin-top: $value; margin-bottom: $value; }
+  .m-#{$key} { margin: $value; }
+  
+  .pt-#{$key} { padding-top: $value; }
+  .pb-#{$key} { padding-bottom: $value; }
+  .pl-#{$key} { padding-left: $value; }
+  .pr-#{$key} { padding-right: $value; }
+  .px-#{$key} { padding-left: $value; padding-right: $value; }
+  .py-#{$key} { padding-top: $value; padding-bottom: $value; }
+  .p-#{$key} { padding: $value; }
+}
+
+// Utility classi per l'allineamento del testo
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-.mt-1 { margin-top: 0.25rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 1rem; }
-.mt-4 { margin-top: 1.5rem; }
-.mt-5 { margin-top: 2rem; }
-
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 1rem; }
-.mb-4 { margin-bottom: 1.5rem; }
-.mb-5 { margin-bottom: 2rem; }
-
 // Stili di transizione per il cambio tema
 .theme-transition {
-  transition: all var(--transition-speed) ease;
+  @include theme-transition;
 }
 
-.footer-section  p{
+// Stili footer
+.footer-section p {
   color: var(--color-primary-light) !important;
 }
 
 // Media queries per dispositivi mobili
-@media (max-width: 768px) {
+@mixin responsive($breakpoint) {
+  @if $breakpoint == tablet {
+    @media (max-width: 768px) { @content; }
+  } @else if $breakpoint == mobile {
+    @media (max-width: 480px) { @content; }
+  }
+}
+
+@include responsive(tablet) {
   .container {
     padding: 0 0.75rem;
   }
@@ -281,7 +347,7 @@ input, select, textarea {
   }
 }
 
-@media (max-width: 480px) {
+@include responsive(mobile) {
   .container {
     padding: 0 0.5rem;
   }
